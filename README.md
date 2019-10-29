@@ -20,3 +20,6 @@ Since Bert only takes 512 length as inputs, this summarizer crop articles >512 l
 
 If --super_long option is used, summarizer automatically parse to numbers of 512 length inputs and summarize per inputs. Number of extraction might slightly altered with --super_long used.
 
+### Version Log:
+
+2019-10-29 	Add auto parse function, available for long article as input
