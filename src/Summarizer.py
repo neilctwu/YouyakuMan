@@ -1,5 +1,4 @@
 import torch
-import numpy as np
 
 
 class Summarizer:
@@ -66,8 +65,8 @@ class Summarizer:
             sent_scores, mask = self.model(src, segs, clss, mask, mask_cls)
 
             sent_scores = sent_scores + mask.float()
-            sent_scores = sent_scores.cpu().data.numpy()
-            selected_ids = np.argsort(-sent_scores, 1)
+            selected_ids = torch.argsort(-sent_scores, 1)
+            selected_ids = selected_ids.cpu().data.numpy()
         self.selected_ids = selected_ids[0]
         self.src_str = test_data['src_str']
         self.str_len = len(test_data['src_str'])
