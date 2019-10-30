@@ -8,6 +8,15 @@ This is an one-touch extractive summarization machine.
 
 using BertSum as summatization model, extract top N important sentences.
 
+### Prerequisites
+
+```
+pip install torch
+pip install pytorch_pretrained_bert
+```
+
+
+
 ### Example
 
 ```

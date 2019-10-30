@@ -1,9 +1,11 @@
+import pdb
 import argparse
 from argparse import RawTextHelpFormatter
 
 from src.DataLoader import DataLoader
 from src.ModelLoader import ModelLoader
 from src.Summarizer import Summarizer
+from src.Translator import TranslatorY
 
 cp = 'checkpoint/stdict_step_300000.pt'
 opt = 'checkpoint/opt_step_300000.pt'
@@ -27,10 +29,14 @@ if __name__ == '__main__':
                         help='Numbers of extraction summaries')
     parser.add_argument("--super_long", action='store_true',
                         help='If length of article >512, this option is needed')
+    parser.add_argument("--not_en", action='store_true',
+                        help='If language of article isn\'t Englisth, will automatically translate by google')
 
     args = parser.parse_args()
     if args.super_long:
-        print('Warning: Number of extractions might slightly altered since with --super_long option')
-    data = DataLoader(args.txt_file, args.super_long).data
+        print('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
+
+    translator = TranslatorY() if args.not_en else None
+    data = DataLoader(args.txt_file, args.super_long, translator).data
     model = ModelLoader(cp, opt)
-    summarizer = Summarizer(data, model, args.n)
+    summarizer = Summarizer(data, model, args.n, translator)

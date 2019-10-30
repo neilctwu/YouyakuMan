@@ -1,10 +1,12 @@
 import torch
+import pdb
 
 
 class Summarizer:
-    def __init__(self, test_data, model, n):
+    def __init__(self, test_data, model, n, translator=None):
         self.data = test_data
         self.model = model
+        self.translator = translator
         n = self.n_distribution(n)
         start_n = 0
         for i, data in enumerate(self.data):
@@ -48,10 +50,13 @@ class Summarizer:
             if len(_pred) == n:
                 break
 
+        # Translate Summaries to other language
+        if self.translator:
+            _pred = self.translator.output(_pred)
+
         # Print result
         for i, pred in enumerate(_pred):
-            print("[Summary %s]" % (start_n+i+1))
-            print(pred)
+            print("[Summary %s] %s" % (start_n+i+1, pred))
 
     def _evaluate(self, test_data):
         self.model.eval()
@@ -71,6 +76,12 @@ class Summarizer:
         self.src_str = test_data['src_str']
         self.str_len = len(test_data['src_str'])
         self.fname = test_data['fname']
+
+    @staticmethod
+    def _translate(texts):
+        translator = YouyakuTrans()
+        texts = [translator(txt) for txt in texts]
+        return texts
 
     # Archieve so far
     def diet(self, percent):
