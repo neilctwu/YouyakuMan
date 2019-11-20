@@ -1,5 +1,7 @@
 import torch
-import pdb
+import sys
+
+sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 
 class Summarizer:
@@ -47,7 +49,7 @@ class Summarizer:
             candidate = self.src_str[j].strip()
             if not _block_tri(candidate, _pred):
                 _pred.append(candidate)
-            if len(_pred) == n:
+            if (len(_pred) == n) or (n==0):
                 break
 
         # Translate Summaries to other language
@@ -56,7 +58,8 @@ class Summarizer:
 
         # Print result
         for i, pred in enumerate(_pred):
-            print("[Summary %s] %s" % (start_n+i+1, pred))
+            sys.stdout.write("[Summary %s] %s \n" % (start_n+i+1, pred))
+            # print("[Summary %s] %s" % (start_n+i+1, pred))
 
     def _evaluate(self, test_data):
         self.model.eval()
@@ -76,12 +79,6 @@ class Summarizer:
         self.src_str = test_data['src_str']
         self.str_len = len(test_data['src_str'])
         self.fname = test_data['fname']
-
-    @staticmethod
-    def _translate(texts):
-        translator = YouyakuTrans()
-        texts = [translator(txt) for txt in texts]
-        return texts
 
     # Archieve so far
     def diet(self, percent):

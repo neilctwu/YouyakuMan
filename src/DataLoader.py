@@ -1,8 +1,9 @@
 from pytorch_pretrained_bert import BertTokenizer
+import re
 
 
 class DataLoader:
-    def __init__(self, path, super_long, translator=None):
+    def __init__(self, path, super_long, lang, translator=None):
         self.path = path
         self.data = []
         self.super_long = super_long
@@ -66,7 +67,7 @@ class DataLoader:
         for text in self.rawtexts:
             text = remove_newline(text)
             text = replace_honorifics(text)
-            msrcs = text.split('. ')
+            msrcs = re.split('\.|。',text)
             srcs += [x for x in msrcs if x not in ['', ' ']]
 
         # Point processed data
@@ -113,4 +114,3 @@ class DataLoader:
         src = src[:src_stop]
         token = token[:token_stop]
         return clss, token, token_stop, src, src_stop
-

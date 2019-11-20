@@ -1,4 +1,4 @@
-import pdb
+import os
 import argparse
 from argparse import RawTextHelpFormatter
 
@@ -7,19 +7,25 @@ from src.ModelLoader import ModelLoader
 from src.Summarizer import Summarizer
 from src.Translator import TranslatorY
 
+import sys
+
+sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
+
 cp = 'checkpoint/stdict_step_300000.pt'
 opt = 'checkpoint/opt_step_300000.pt'
+
+os.chdir('./')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
                                      description="""
     Intro:   This is an one-touch extractive summarization machine.
              using BertSum as summatization model, extract top N important sentences.
-             
-    Note:    Since Bert only takes 512 length as inputs, this summarizer crop articles >512 length. 
+
+    Note:    Since Bert only takes 512 length as inputs, this summarizer crop articles >512 length.
              If --super_long option is used, summarizer automatically parse to numbers of 512 length
              inputs and summarize per inputs. Number of extraction might slightly altered with --super_long used.
-    
+
     Example: youyakuman.py -txt_file YOUR_FILE -n 3
     """)
 
@@ -34,7 +40,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     if args.super_long:
-        print('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
+        sys.stdout.write('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
 
     translator = TranslatorY() if args.not_en else None
     data = DataLoader(args.txt_file, args.super_long, translator).data
