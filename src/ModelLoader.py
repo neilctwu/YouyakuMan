@@ -1,15 +1,28 @@
 import torch
 from torch import nn
-from pytorch_pretrained_bert import BertConfig
+from pytorch_pretrained_bert import BertModel
+import pdb
 
-from src.models.model_builder import Bert
 from src.models.encoder import TransformerInterEncoder
+from src.LangFactory import LangFactory
+
+
+class Bert(nn.Module):
+    def __init__(self, bert_model, temp_dir):
+        super(Bert, self).__init__()
+        self.model = BertModel.from_pretrained(bert_model, cache_dir=temp_dir)
+
+    def forward(self, x, segs, mask):
+        encoded_layers, _ = self.model(x, segs, attention_mask=mask)
+        top_vec = encoded_layers[-1]
+        return top_vec
 
 
 class Summarizer(nn.Module):
-    def __init__(self, opt, bert_config=None):
+    def __init__(self, opt, lang):
         super(Summarizer, self).__init__()
-        self.bert = Bert('../model', False, bert_config)
+        self.langfac = LangFactory(lang)
+        self.bert = Bert(self.langfac.toolkit.bert_model, './model')
         self.encoder = TransformerInterEncoder(self.bert.model.config.hidden_size,
                                                opt['ff_size'],
                                                opt['heads'],
@@ -28,10 +41,9 @@ class Summarizer(nn.Module):
 
 
 class ModelLoader(Summarizer):
-    def __init__(self, cp, opt):
-        config = BertConfig.from_json_file('model/bert_config_uncased_base.json')
+    def __init__(self, cp, opt, lang):
         cp_statedict = torch.load(cp, map_location=lambda storage, loc: storage)
-        opt = vars(torch.load(opt))
-        super(ModelLoader, self).__init__(opt, bert_config=config)
+        opt = dict(torch.load(opt))
+        super(ModelLoader, self).__init__(opt, lang)
         self.load_cp(cp_statedict)
         self.eval()

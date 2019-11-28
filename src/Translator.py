@@ -1,7 +1,6 @@
 from googletrans import Translator
 import sys
-
-sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
+import pdb
 
 
 class TranslatorY(Translator):
@@ -10,16 +9,14 @@ class TranslatorY(Translator):
         self.input_lang = 'en'
         self.check_lang = True
 
-    def input(self, texts_list):
-        transed_text = []
-        for text in texts_list:
-            if self.check_lang:
-                self.input_lang = self.detect(text).lang
-                sys.stdout.write('<Translator: Input article is wrote in [{}] language>\n'.format(self.input_lang.upper()))
-                self.check_lang = False
-            trans = self._translation(text, self.input_lang, 'en')
-            transed_text.append(trans.text)
-        return transed_text
+    def input(self, text):
+        pdb.set_trace()
+        if self.check_lang:
+            self.input_lang = self.detect(text).lang
+            sys.stdout.write('<Translator: Input article is wrote in [{}] language>\n'.format(self.input_lang.upper()))
+            self.check_lang = False
+        trans = self._translation(text, self.input_lang, 'en')
+        return trans.text
 
     def output(self, texts_list):
         transed_text = []

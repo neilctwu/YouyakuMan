@@ -1,5 +1,7 @@
 from pytorch_pretrained_bert import BertTokenizer
-import re
+
+from src.LangFactory import LangFactory
+import pdb
 
 
 class DataLoader:
@@ -7,25 +9,28 @@ class DataLoader:
         self.path = path
         self.data = []
         self.super_long = super_long
+        self.langfac = LangFactory(lang)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self._load_data()
-        self._text_cleaning()
-        if translator:
+        # If rawdata isnt modelized, use google translation to translate to English
+        if self.langfac.stat is 'Invalid':
             self.translator = translator
             self._translate()
+        # Outsource suitable line splitter
+        self.texts = self.langfac.toolkit.linesplit(self.rawtexts)
+        # Outsource suitable tokenizer
+        self.token, self.token_id = self.langfac.toolkit.tokenizer(self.texts)
         self._generate_results()
 
     def _generate_results(self):
 
         if not self.super_long:
-            token_all = self._list_tokenize()
-            _, _ = self._add_result(self.fname, token_all)
+            _, _ = self._add_result(self.fname, self.token_id)
         else:
             # Initialize indexes for while loop
             src_start, token_start, src_end = 0, 0, 1
-            token_all = self._list_tokenize()
             while src_end != 0:
-                token_end, src_end = self._add_result(self.fname, token_all,
+                token_end, src_end = self._add_result(self.fname, self.token_id,
                                                       src_start, token_start)
                 token_start = token_end
                 src_start = src_end
@@ -47,31 +52,11 @@ class DataLoader:
         self.fname = self.path.split('/')[-1].split('.')[0]
         with open(self.path, 'r', encoding='utf-8_sig', errors='ignore') as f:
             self.rawtexts = f.readlines()
+        self.rawtexts = ' '.join(self.rawtexts)
 
     def _translate(self):
-        texts = self.texts
+        texts = self.rawtexts
         self.texts = self.translator.input(texts)
-
-    def _text_cleaning(self):
-        def remove_newline(x):
-            x = x.replace('\n', ' ')
-            return x
-
-        def replace_honorifics(x):
-            honors = ['Mr', 'Mrs']
-            for h in honors:
-                x = x.replace(h + '. ', h + ' ')
-            return x
-
-        srcs = []
-        for text in self.rawtexts:
-            text = remove_newline(text)
-            text = replace_honorifics(text)
-            msrcs = re.split('\.|。',text)
-            srcs += [x for x in msrcs if x not in ['', ' ']]
-
-        # Point processed data
-        self.texts = srcs
 
     def _list_tokenize(self):
         src_tokenize = []
@@ -84,12 +69,11 @@ class DataLoader:
 
     def _all_tofixlen(self, token, src_start, token_start):
         # Tune All shit into 512 length
-        # pdb.set_trace()
         token_end = 0
         src_end = 0
         token = token[token_start:]
         src = self.texts[src_start:]
-        clss = [i for i, x in enumerate(token) if x == 101]
+        clss = [i for i, x in enumerate(token) if x == self.langfac.toolkit.cls_id]
         if len(token) > 512:
             clss, token, token_stop, src, src_stop = self._length512(src, token, clss)
             token_end = token_start + token_stop
@@ -97,18 +81,21 @@ class DataLoader:
         labels = [0] * len(clss)
         mask = ([True] * len(token)) + ([False] * (512 - len(token)))
         mask_cls = [True] * len(clss)
-        token = token + ([0] * (512 - len(token)))
+        token = token + ([self.langfac.toolkit.mask_id] * (512 - len(token)))
         segs = []
         flag = 1
         for idx in token:
-            if idx == 101:
+            if idx == self.langfac.toolkit.cls_id:
                 flag = not flag
             segs.append(int(flag))
         return (token, clss, segs, labels, mask, mask_cls, src), (token_end, src_end)
 
     @staticmethod
     def _length512(src, token, clss):
-        src_stop = [x > 512 for x in clss].index(True) - 1
+        if max(clss) > 512:
+            src_stop = [x > 512 for x in clss].index(True) - 1
+        else:
+            src_stop = len(clss) - 1
         token_stop = clss[src_stop]
         clss = clss[:src_stop]
         src = src[:src_stop]

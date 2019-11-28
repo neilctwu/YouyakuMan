@@ -6,13 +6,10 @@ from src.DataLoader import DataLoader
 from src.ModelLoader import ModelLoader
 from src.Summarizer import Summarizer
 from src.Translator import TranslatorY
+from src.LangFactory import LangFactory
 
 import sys
 
-sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
-
-cp = 'checkpoint/stdict_step_300000.pt'
-opt = 'checkpoint/opt_step_300000.pt'
 
 os.chdir('./')
 
@@ -33,16 +30,20 @@ if __name__ == '__main__':
                         help='Text file for summarization (encoding:"utf-8_sig")')
     parser.add_argument("-n", default=3, type=int,
                         help='Numbers of extraction summaries')
+    parser.add_argument("-lang", default='en', type=str,
+                        help='If language of article isn\'t Englisth, will automatically translate by google')
     parser.add_argument("--super_long", action='store_true',
                         help='If length of article >512, this option is needed')
-    parser.add_argument("--not_en", action='store_true',
-                        help='If language of article isn\'t Englisth, will automatically translate by google')
 
     args = parser.parse_args()
+
     if args.super_long:
         sys.stdout.write('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
 
-    translator = TranslatorY() if args.not_en else None
-    data = DataLoader(args.txt_file, args.super_long, translator).data
-    model = ModelLoader(cp, opt)
+    # Language initiator
+    lf = LangFactory(args.lang)
+    translator = None if args.lang in lf.support_lang else TranslatorY()
+
+    data = DataLoader(args.txt_file, args.super_long, args.lang, translator).data
+    model = ModelLoader(lf.toolkit.cp, lf.toolkit.opt, args.lang)
     summarizer = Summarizer(data, model, args.n, translator)

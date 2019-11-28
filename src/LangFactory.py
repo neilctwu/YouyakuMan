@@ -2,6 +2,7 @@ import re
 from pyknp import Juman
 from configparser import ConfigParser
 from pytorch_pretrained_bert import BertTokenizer
+import pdb
 
 config = ConfigParser()
 config.read('config.ini')
@@ -19,18 +20,18 @@ class JumanTokenizer:
 
 class LangFactory:
     def __init__(self, lang):
-        lang_list = ['en', 'jp']
+        self.support_lang = ['en', 'jp']
         self.lang = lang
         self.stat = 'valid'
-        if self.lang not in lang_list:
+        if self.lang not in self.support_lang:
             print('Language not supported, will activate Translation.')
             self.stat = 'Invalid'
         self._toolchooser()
 
     def _toolchooser(self):
-        if self.lang is 'jp':
+        if self.lang == 'jp':
             self.toolkit = JapaneseWorker()
-        elif self.lang is 'en':
+        elif self.lang == 'en':
             self.toolkit = EnglishWorker()
         else:
             self.toolkit = EnglishWorker()
@@ -39,8 +40,14 @@ class LangFactory:
 class JapaneseWorker:
     def __init__(self):
         self.juman_tokenizer = JumanTokenizer()
-        self.bert_tokenizer = BertTokenizer(config['DEFAULT']['pretrained_path'] + 'vocab.txt',
-                                            do_lower_case=False, do_basic_tokenize=False)
+        self.bert_tokenizer = BertTokenizer(config['DEFAULT']['vocab_path'],
+                                            do_basic_tokenize=False)
+        self.cls_id = self.bert_tokenizer.vocab['[CLS]']
+        self.mask_id = self.bert_tokenizer.vocab['[MASK]']
+        self.bert_model = './model/Japanese'
+
+        self.cp = 'checkpoint/jp/cp_step_710000.pt'
+        self.opt = 'checkpoint/jp/opt_step_710000.pt'
 
     @staticmethod
     def linesplit(src):
@@ -48,6 +55,22 @@ class JapaneseWorker:
         :param src: type str, String type article
         :return: type list, punctuation seperated sentences
         """
+        def remove_newline(x):
+            x = x.replace('\n', '')
+            return x
+
+        def remove_blank(x):
+            x = x.replace(' ', '')
+            return x
+
+        def remove_unknown(x):
+            unknown = ['\u3000']
+            for h in unknown:
+                x = x.replace(h, '')
+            return x
+        src = remove_blank(src)
+        src = remove_newline(src)
+        src = remove_unknown(src)
         src_line = re.split('。(?<!」)|！(?<!」)|？(?!」)', src)
         src_line = [x for x in src_line if x is not '']
         return src_line
@@ -77,9 +100,13 @@ class JapaneseWorker:
 
 class EnglishWorker:
     def __init__(self):
-        self.juman_tokenizer = JumanTokenizer()
-        self.bert_tokenizer = BertTokenizer(config['DEFAULT']['pretrained_path'] + 'vocab.txt',
-                                            do_lower_case=False, do_basic_tokenize=False)
+        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.cls_id = self.bert_tokenizer.vocab['[CLS]']
+        self.mask_id = self.bert_tokenizer.vocab['[MASK]']
+        self.bert_model = 'bert-base-uncased'
+
+        self.cp = 'checkpoint/en/stdict_step_300000.pt'
+        self.opt = 'checkpoint/en/opt_step_300000.pt'
 
     @staticmethod
     def linesplit(src):
