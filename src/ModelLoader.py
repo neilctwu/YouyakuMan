@@ -22,7 +22,7 @@ class Summarizer(nn.Module):
     def __init__(self, opt, lang):
         super(Summarizer, self).__init__()
         self.langfac = LangFactory(lang)
-        self.bert = Bert(self.langfac.toolkit.bert_model, './model')
+        self.bert = Bert(self.langfac.toolkit.bert_model, './model/English')
         self.encoder = TransformerInterEncoder(self.bert.model.config.hidden_size,
                                                opt['ff_size'],
                                                opt['heads'],
