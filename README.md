@@ -14,7 +14,7 @@ using BertSum as summatization model, extract top N important sentences.
 
 ### Prerequisites
 
-##### General requirement
+#### General requirement
 
 ```
 pip install torch
@@ -22,18 +22,19 @@ pip install pytorch_pretrained_bert
 pip install googletrans
 ```
 
-##### Japanese specific requirement
+#### Japanese specific requirement
 
 - [BERT日本語Pretrainedモデル — KUROHASHI-KAWAHARA LAB](http://nlp.ist.i.kyoto-u.ac.jp/index.php?BERT日本語Pretrainedモデル)
 - [Juman++ V2の開発版](https://github.com/ku-nlp/jumanpp)[ — KUROHASHI-KAWAHARA LAB](http://nlp.ist.i.kyoto-u.ac.jp/index.php?BERT日本語Pretrainedモデル)
 
 ---
 
-#### Pretrained Model
+### Pretrained Model
 
 English: [Here](https://drive.google.com/open?id=1wxf6zTTrhYGmUTVHVMxGpl_GLaZAC1ye)
-
 Japanese: [Here](https://drive.google.com/open?id=10hJX1QBAHfJpErG2I8yhcAl2QB_q28Fi)
+
+Download and put under directory `checkpoint/en` or `checkpoint/jp`
 
 ---
 

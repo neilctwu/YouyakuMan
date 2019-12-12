@@ -44,7 +44,7 @@ class JapaneseWorker:
                                             do_basic_tokenize=False)
         self.cls_id = self.bert_tokenizer.vocab['[CLS]']
         self.mask_id = self.bert_tokenizer.vocab['[MASK]']
-        self.bert_model = './model/Japanese'
+        self.bert_model = 'PATH_TO_BERTJPN'
 
         self.cp = 'checkpoint/jp/cp_step_710000.pt'
         self.opt = 'checkpoint/jp/opt_step_710000.pt'
