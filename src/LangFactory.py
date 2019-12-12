@@ -5,7 +5,7 @@ from pytorch_pretrained_bert import BertTokenizer
 import pdb
 
 config = ConfigParser()
-config.read('config.ini')
+config.read('./config.ini')
 
 
 class JumanTokenizer:

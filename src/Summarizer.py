@@ -58,7 +58,7 @@ class Summarizer:
 
         # Print result
         for i, pred in enumerate(_pred):
-            sys.stdout.write("[Summary %s] %s \n" % (start_n+i+1, pred))
+            sys.stdout.write("[要約文%s] %s \n" % (start_n+i+1, pred))
             # print("[Summary %s] %s" % (start_n+i+1, pred))
 
     def _evaluate(self, test_data):

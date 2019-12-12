@@ -37,8 +37,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.super_long:
-        sys.stdout.write('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
+#    if args.super_long:
+#        sys.stdout.write('\n<Warning: Number of extractions might slightly altered since with --super_long option>\n')
 
     # Language initiator
     lf = LangFactory(args.lang)
