@@ -45,23 +45,25 @@ Download and put under directory `checkpoint/en` or `checkpoint/jp`
 $python youyakuman.py -txt_file YOUR_FILE -lang LANG -n 3 --super_long 
 ```
 
-### Note
+#### Note
 
 Since Bert only takes 512 length as inputs, this summarizer crop articles >512 length.
 
 If --super_long option is used, summarizer automatically parse to numbers of 512 length inputs and summarize per inputs. Number of extraction might slightly altered with --super_long used.
 
-### Version Log:
-
-2019-11-14     Add multiple language support
-
-2019-10-29 	Add auto parse function, available for long article as input
-
----
 
 ### Train Example
 
 ```
 $python youyakumanJPN_train.py -data_folder [training_txt_path] -save_path [model_saving_path] -train_from [pretrained_model_file]
 ```
+
+---
+### Version Log:
+
+2020-02-10  Training part added
+
+2019-11-14  Add multiple language support
+
+2019-10-29 	Add auto parse function, available for long article as input
 
