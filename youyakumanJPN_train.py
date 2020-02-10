@@ -3,7 +3,6 @@ import torch
 import os
 
 import argparse
-from argparse import RawTextHelpFormatter
 
 from src.models.train_dataloader import DataLoader
 from src.models.model_builder import Summarizer, build_optim
@@ -12,17 +11,7 @@ from src.models.trainer import build_trainer
 os.chdir('./')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter,
-                                     description="""
-    Intro:   This is an one-touch extractive summarization machine.
-             using BertSum as summatization model, extract top N important sentences.
-
-    Note:    Since Bert only takes 512 length as inputs, this summarizer crop articles >512 length.
-             If --super_long option is used, summarizer automatically parse to numbers of 512 length
-             inputs and summarize per inputs. Number of extraction might slightly altered with --super_long used.
-
-    Example: youyakuman.py -txt_file YOUR_FILE -n 3
-    """)
+    parser = argparse.ArgumentParser()
     parser.add_argument("-data_folder", default='', type=str)
     parser.add_argument("-batch_size", default=5, type=int)
     parser.add_argument("-train_from", default='', type=str)
