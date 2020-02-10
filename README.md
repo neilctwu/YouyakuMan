@@ -56,3 +56,12 @@ If --super_long option is used, summarizer automatically parse to numbers of 512
 2019-11-14     Add multiple language support
 
 2019-10-29 	Add auto parse function, available for long article as input
+
+---
+
+### Train Example
+
+```
+$python youyakumanJPN_train.py -data_folder [training_txt_path] -save_path [model_saving_path] -train_from [pretrained_model_file]
+```
+
