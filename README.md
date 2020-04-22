@@ -1,6 +1,6 @@
-# YouyakuMan 
+# YouyakuMan
 
- [![Unstable](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)](*https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg*)  [![License](https://poser.pugx.org/ali-irawan/xtra/license.svg)](*https://poser.pugx.org/ali-irawan/xtra/license.svg*) 
+ [![Unstable](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)](*https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg*)  [![License](https://poser.pugx.org/ali-irawan/xtra/license.svg)](*https://poser.pugx.org/ali-irawan/xtra/license.svg*)
 
 ### Introduction
 
@@ -42,7 +42,7 @@ Download and put under directory `checkpoint/en` or `checkpoint/jp`
 ### Example
 
 ```
-$python youyakuman.py -txt_file YOUR_FILE -lang LANG -n 3 --super_long 
+$python youyakuman.py -txt_file YOUR_FILE -lang LANG -n 3 --super_long
 ```
 
 #### Note
@@ -51,11 +51,27 @@ Since Bert only takes 512 length as inputs, this summarizer crop articles >512 l
 
 If --super_long option is used, summarizer automatically parse to numbers of 512 length inputs and summarize per inputs. Number of extraction might slightly altered with --super_long used.
 
+---
 
 ### Train Example
 
 ```
 $python youyakumanJPN_train.py -data_folder [training_txt_path] -save_path [model_saving_path] -train_from [pretrained_model_file]
+"""
+-data_folder : path to train data folder, structure showed as below:
+                training_txt_path
+                ├─ article1.pickle
+                ├─ article2.pickle
+                ..    
+"""
+```
+
+### Train Data Preparation
+
+Training data should be a dictionary saved by `pickle`, to be specifically, a dictionary containing below contents of **one article**.
+
+```
+{'body': 'TEXT_BODY', 'summary': 'SUMMARY_1<sep>SUMMARY_2<sep>SUMMARY3'}
 ```
 
 ---
@@ -66,4 +82,3 @@ $python youyakumanJPN_train.py -data_folder [training_txt_path] -save_path [mode
 2019-11-14  Add multiple language support
 
 2019-10-29 	Add auto parse function, available for long article as input
-
