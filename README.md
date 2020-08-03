@@ -77,6 +77,8 @@ Training data should be a dictionary saved by `pickle`, to be specifically, a di
 ---
 ### Version Log:
 
+2020-08-03  Updated to `transformer` package, remove redudndancy, model saving format while training
+
 2020-02-10  Training part added
 
 2019-11-14  Add multiple language support
