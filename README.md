@@ -33,7 +33,9 @@ pip install googletrans
 
 English: [Here](https://drive.google.com/open?id=1wxf6zTTrhYGmUTVHVMxGpl_GLaZAC1ye)
 
-Japanese: [Here](https://drive.google.com/open?id=10hJX1QBAHfJpErG2I8yhcAl2QB_q28Fi)
+Japanese: [Here](https://drive.google.com/file/d/1BBjg0LI8VAgpKT6QN1ah1S49mlUhbM1h/view?usp=sharing)
+
+* Japanese model updated: trained with 35k data and 120k iteration
 
 Download and put under directory `checkpoint/en` or `checkpoint/jp`
 
