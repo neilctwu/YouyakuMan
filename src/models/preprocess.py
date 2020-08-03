@@ -3,7 +3,7 @@ import re
 from pyknp import Juman
 from sumeval.metrics.rouge import RougeCalculator
 from configparser import ConfigParser
-from pytorch_pretrained_bert import BertTokenizer
+from transformers import BertTokenizer
 
 config = ConfigParser()
 config.read('config.ini')
