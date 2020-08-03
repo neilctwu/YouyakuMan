@@ -1,10 +1,9 @@
-from pytorch_pretrained_bert import BertTokenizer
+from transformers import BertTokenizer
 
 from src.LangFactory import LangFactory
-import pdb
 
 
-class DataLoader:
+class TestLoader:
     def __init__(self, path, super_long, lang, translator=None):
         self.path = path
         self.data = []
@@ -57,15 +56,6 @@ class DataLoader:
     def _translate(self):
         texts = self.rawtexts
         self.texts = self.translator.input(texts)
-
-    def _list_tokenize(self):
-        src_tokenize = []
-        for src in self.texts:
-            src_subtokens = self.tokenizer.tokenize(src)
-            src_subtokens = ['[CLS]'] + src_subtokens + ['[SEP]']
-            src_subtoken_idxs = self.tokenizer.convert_tokens_to_ids(src_subtokens)
-            src_tokenize += src_subtoken_idxs
-        return src_tokenize
 
     def _all_tofixlen(self, token, src_start, token_start):
         # Tune All shit into 512 length

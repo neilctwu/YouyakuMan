@@ -1,6 +1,5 @@
 from googletrans import Translator
 import sys
-import pdb
 
 
 class TranslatorY(Translator):
@@ -10,7 +9,6 @@ class TranslatorY(Translator):
         self.check_lang = True
 
     def input(self, text):
-        pdb.set_trace()
         if self.check_lang:
             self.input_lang = self.detect(text).lang
             sys.stdout.write('<Translator: Input article is wrote in [{}] language>\n'.format(self.input_lang.upper()))

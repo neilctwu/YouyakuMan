@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from pytorch_pretrained_bert import BertModel
+from transformers import BertModel
 from torch.nn.init import xavier_uniform_
 
 from src.models.encoder import TransformerInterEncoder
@@ -37,33 +37,33 @@ def build_optim(args, model, checkpoint):
 
 
 class Bert(nn.Module):
-    def __init__(self):
+    def __init__(self, bert_model):
         super(Bert, self).__init__()
-        self.model = BertModel.from_pretrained('./model/Japanese/')
+        self.model = BertModel.from_pretrained(bert_model)
 
     def forward(self, x, segs, mask):
-        encoded_layers, _ = self.model(x, segs, attention_mask=mask)
-        top_vec = encoded_layers[-1]
+        top_vec, _ = self.model(x, token_type_ids=segs, attention_mask=mask)
         return top_vec
 
 
 class Summarizer(nn.Module):
-    def __init__(self, device, args):
+    def __init__(self, args, bert_model, device='cpu', train=False):
         super(Summarizer, self).__init__()
         self.device = device
-        self.bert = Bert()
+        self.bert = Bert(bert_model)
         self.encoder = TransformerInterEncoder(self.bert.model.config.hidden_size,
                                                args.ff_size, args.heads,
                                                args.dropout, args.inter_layers)
 
-        if args.param_init != 0.0:
-            for p in self.encoder.parameters():
-                p.data.uniform_(-args.param_init, args.param_init)
+        if train:
+            if args.param_init:
+                for p in self.encoder.parameters():
+                    p.data.uniform_(-args.param_init, args.param_init)
 
-        if args.param_init_glorot:
-            for p in self.encoder.parameters():
-                if p.dim() > 1:
-                    xavier_uniform_(p)
+            if args.param_init_glorot:
+                for p in self.encoder.parameters():
+                    if p.dim() > 1:
+                        xavier_uniform_(p)
         self.to(device)
 
     def load_cp(self, pt):

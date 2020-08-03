@@ -1,8 +1,7 @@
 import re
 from pyknp import Juman
 from configparser import ConfigParser
-from pytorch_pretrained_bert import BertTokenizer
-import pdb
+from transformers import BertTokenizer
 
 config = ConfigParser()
 config.read('./config.ini')
@@ -44,10 +43,10 @@ class JapaneseWorker:
                                             do_basic_tokenize=False)
         self.cls_id = self.bert_tokenizer.vocab['[CLS]']
         self.mask_id = self.bert_tokenizer.vocab['[MASK]']
-        self.bert_model = 'PATH_TO_BERTJPN'
+        self.bert_model = 'model/Japanese/'
 
-        self.cp = 'checkpoint/jp/cp_step_710000.pt'
-        self.opt = 'checkpoint/jp/opt_step_710000.pt'
+        self.cp = 'checkpoint/jp/cp_step_1200000.pt'
+        self.opt = 'checkpoint/jp/opt_step_1200000.pt'
 
     @staticmethod
     def linesplit(src):

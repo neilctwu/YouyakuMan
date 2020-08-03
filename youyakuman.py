@@ -2,14 +2,11 @@ import os
 import argparse
 from argparse import RawTextHelpFormatter
 
-from src.DataLoader import DataLoader
+from src.TestLoader import TestLoader
 from src.ModelLoader import ModelLoader
-from src.Summarizer import Summarizer
+from src.Summarizer import SummarizerIO
 from src.Translator import TranslatorY
 from src.LangFactory import LangFactory
-
-import sys
-
 
 os.chdir('./')
 
@@ -44,6 +41,6 @@ if __name__ == '__main__':
     lf = LangFactory(args.lang)
     translator = None if args.lang in lf.support_lang else TranslatorY()
 
-    data = DataLoader(args.txt_file, args.super_long, args.lang, translator).data
-    model = ModelLoader(lf.toolkit.cp, lf.toolkit.opt, args.lang)
-    summarizer = Summarizer(data, model, args.n, translator)
+    data = TestLoader(args.txt_file, args.super_long, args.lang, translator).data
+    model = ModelLoader(lf.toolkit.cp, lf.toolkit.opt, lf.toolkit.bert_model)
+    summarizer = SummarizerIO(data, model, args.n, translator)

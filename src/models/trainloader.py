@@ -63,7 +63,7 @@ class Batch(object):
         return rtn_data
 
 
-class DataLoader:
+class TrainLoader:
     def __init__(self, data_path, input_length, batch_size,
                  device='cuda', shuffle=True):
         self.data_path = data_path if data_path[-1] is '/' else data_path+'/'

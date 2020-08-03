@@ -4,7 +4,7 @@ import sys
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 
-class Summarizer:
+class SummarizerIO:
     def __init__(self, test_data, model, n, translator=None):
         self.data = test_data
         self.model = model
@@ -69,7 +69,6 @@ class Summarizer:
             clss = torch.tensor([test_data['clss']])
             mask = torch.tensor([test_data['mask']])
             mask_cls = torch.tensor([test_data['mask_cls']])
-
             sent_scores, mask = self.model(src, segs, clss, mask, mask_cls)
 
             sent_scores = sent_scores + mask.float()

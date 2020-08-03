@@ -4,7 +4,7 @@ import os
 
 import argparse
 
-from src.models.train_dataloader import DataLoader
+from src.models.trainloader import TrainLoader
 from src.models.model_builder import Summarizer, build_optim
 from src.models.trainer import build_trainer
 
@@ -51,9 +51,9 @@ if __name__ == '__main__':
         random.seed(args.seed)
 
     def train_loader_fct():
-        return DataLoader(args.data_folder, 512, args.batch_size, device=device, shuffle=True)
+        return TrainLoader(args.data_folder, 512, args.batch_size, device=device, shuffle=True)
 
-    model = Summarizer(device, args)
+    model = Summarizer(args, './model/Japanese/', device, train=True)
     if args.train_from != '':
         print('Loading checkpoint from %s' % args.train_from)
         checkpoint = torch.load(args.train_from,
