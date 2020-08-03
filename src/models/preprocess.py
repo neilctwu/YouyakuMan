@@ -38,7 +38,6 @@ class Preprocess:
         self.trim_clss = 0
 
     def __call__(self, data_dic, length):
-        self.src_title = data_dic['name']
         self.src_body = data_dic['body']
         self.src_summary = data_dic['summary'].split('<sep>')
         self._init_data()
@@ -59,8 +58,7 @@ class Preprocess:
         # step 6. trim length for input
         self._set_length(length)
 
-        return {'title': self.src_title,
-                'src': self.tokenid,
+        return {'src': self.tokenid,
                 'labels': self.label,
                 'segs': self.segs,
                 'mask': self.mask,
@@ -151,4 +149,3 @@ class Preprocess:
         pad_len = (n - len(self.tokenid))
         self.tokenid = self.tokenid + ([self.bert_tokenizer.vocab['[MASK]']] * pad_len)
         self.segs = self.segs + ([int(not self.segs[-1])] * pad_len)
-
