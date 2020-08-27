@@ -18,7 +18,7 @@ using BertSum as summatization model, extract top N important sentences.
 
 ```
 pip install torch
-pip install transformer
+pip install transformers
 pip install googletrans
 ```
 
