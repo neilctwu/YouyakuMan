@@ -118,12 +118,12 @@ class Trainer(object):
             'opt': self.args,
             'optim': self.optim,
         }
-        f'{self.args.save_path}/model_step_{step}.pt'
         print(f'Saving checkpoint {self.args.save_path}/model_step_{step}.pt')
         if not os.path.exists(self.args.save_path):
-            torch.save(checkpoint, f'{self.args.save_path}/model_step_{step}.pt')
-            torch.save(model_state_dict, f'{self.args.save_path}/cp_step_{step}.pt')
-            torch.save(self.args, f'{self.args.save_path}/opt_{step}.pt')
+            os.mkdir(self.args.save_path)
+        torch.save(checkpoint, f'{self.args.save_path}/model_step_{step}.pt')
+        torch.save(model_state_dict, f'{self.args.save_path}/cp_step_{step}.pt')
+        torch.save(self.args, f'{self.args.save_path}/opt_{step}.pt')
 
     def _start_report_manager(self, start_time=None):
         if self.report_manager is not None:
